@@ -1,35 +1,35 @@
-﻿@page "/countries"
+﻿@page "/categories"
 @inject IRepository repository
 @inject NavigationManager navigationManager
 @inject SweetAlertService sweetAlertService
 
-<h3>Paises</h3>
+<h3>Categorías</h3>
 
 <div class="mb-3">
-    <a class="btn btn-primary" href="/countries/create">Nuevo País</a>
+    <a class="btn btn-primary" href="/categories/create">Nueva Categoría</a>
 </div>
 
-<GenericList MyList="Countries">
+<GenericList MyList="Categories">
     <Body>
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>País</th>
+                    <th>Categoría</th>
                     @*<th>Estados / Departamentos</th>*@
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var country in Countries!)
+                @foreach (var category in Categories!)
                 {
                     <tr>
                         <td>
-                            @country.Name
+                            @category.Name
                         </td>
 
-                        <td>
-                            <a class="btn btn-warning" href="/countries/edit/@country.Id">Editar</a>
-                            <button class="btn btn-danger" @onclick=@(() => DeleteAsync(country.Id))>Borrar</button>
+                        <td style="width:200px">
+                            <a class="btn btn-warning" href="/categories/edit/@category.Id">Editar</a>
+                            <button class="btn btn-danger" @onclick=@(() => DeleteAsync(category.Id))>Borrar</button>
                         </td>
                     </tr>
                 }
@@ -40,7 +40,7 @@
 </GenericList>
 
 
-@if (Countries is null)
+@if (Categories is null)
 {
     @*<p>Cargando...</p>*@
 
@@ -51,7 +51,7 @@ else
 }
 
 @code {
-    public List<Country>? Countries { get; set; }
+    public List<Category>? Categories { get; set; }
 
     protected async override Task OnInitializedAsync()
     {
@@ -59,8 +59,8 @@ else
     }
     private async Task LoadAsync()
     {
-        var responseHppt = await repository.Get<List<Country>>("/api/countries");
-        Countries = responseHppt.Response!;
+        var responseHppt = await repository.Get<List<Category>>("/api/categories");
+        Categories = responseHppt.Response!;
     }
     private async Task DeleteAsync(int id)
     {
@@ -78,7 +78,7 @@ else
         {
             return;
         }
-        var responseHttp = await repository.Delete($"/api/countries/{id}");
+        var responseHttp = await repository.Delete($"/api/categories/{id}");
         if (responseHttp.Error)
         {
             var message = await responseHttp.GetErrorMessageAsync();

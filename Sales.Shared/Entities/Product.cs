@@ -19,7 +19,7 @@ namespace Sales.Shared.Entities
         public int ProductCategoryId { get; set; }
 
         public ProductCategory? ProductCategory { get; set; }
-        public ICollection<City>? Cities { get; set; }
-        public int CitiesNumber => Cities == null ? 0 : Cities.Count;
+        //public ICollection<Category>? Category { get; set; }
+        //public int CitiesNumber => Cities == null ? 0 : Cities.Count;
     }
 }

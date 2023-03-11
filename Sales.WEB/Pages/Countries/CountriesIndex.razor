@@ -4,6 +4,9 @@
 @inject SweetAlertService sweetAlertService
 
 <h3>Paises</h3>
+<Pagination CurrentPage="currentPage"
+            TotalPages="totalPages"
+            SelectedPage="SelectedPageAsync" />
 
 <div class="mb-3">
     <a class="btn btn-primary" href="/countries/create">Nuevo País</a>
@@ -25,8 +28,8 @@ else
                 <thead>
                     <tr>
                         <th>País</th>
-                        <th>Estados / Departamentos</th>
-                        <th></th>
+                        <th  style="width:220px">Estados / Departamentos</th>
+                        <th style="width:220px"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,15 +56,49 @@ else
 
 @code {
     public List<Country>? Countries { get; set; }
+    private int currentPage = 1;
+    private int totalPages;
+
 
     protected async override Task OnInitializedAsync()
     {
         await LoadAsync();
     }
-    private async Task LoadAsync()
+
+    private async Task SelectedPageAsync(int page)
     {
-        var responseHppt = await repository.Get<List<Country>>("/api/countries");
+        currentPage = page;
+        await LoadAsync(page);
+    }
+
+    private async Task LoadAsync(int page = 1)
+    {
+        string url1 = $"/api/countries?page={page}";
+        string url2 = $"/api/countries/totalPages";
+
+        var responseHppt = await repository.Get<List<Country>>(url1);
+        var responseHppt2 = await repository.Get<int>(url2);
         Countries = responseHppt.Response!;
+        totalPages = responseHppt2.Response!;
+    
+            _context.Add(category);
+            await _context.SaveChangesAsync();
+            return Ok(category);
+        }
+        catch (DbUpdateException dbUpdateException)
+        {
+            if (dbUpdateException.InnerException!.Message.Contains("duplicate"))
+            {
+                return BadRequest("Ya existe un país con el mismo nombre.");
+
+            }
+            return BadRequest(dbUpdateException.Message);
+        }
+        catch (Exception exception)
+        {
+            return BadRequest(exception.Message);
+        }
+
     }
     private async Task DeleteAsync(int id)
     {
